@@ -4,10 +4,7 @@ import com.teste.rtposvenda.configuration.exception.AppBaseException;
 import com.teste.rtposvenda.configuration.exception.BusinessException;
 import com.teste.rtposvenda.configuration.exception.model.ResponseError;
 import com.teste.rtposvenda.configuration.exception.model.SubErro;
-import com.teste.rtposvenda.configuration.exception.usecase.ContratoInativoException;
-import com.teste.rtposvenda.configuration.exception.usecase.ContratoParcelaAtrasadaException;
-import com.teste.rtposvenda.configuration.exception.usecase.DiaPagamentoExcedidoException;
-import com.teste.rtposvenda.configuration.exception.usecase.QuantidadeParcelasInferiorException;
+import com.teste.rtposvenda.configuration.exception.usecase.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -39,6 +36,16 @@ public class ExceptionHandler {
         });
 
         return errors;
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(AlteraDiaPagamentoInvalidoException.class)
+    public ResponseEntity<ResponseError> alteraDiaPagamentoInvalidoExceptionHandler(final BusinessException e) {
+        return createBodyResponse(HttpStatus.UNPROCESSABLE_ENTITY, e);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(AlteraParcelasInvalidoException.class)
+    public ResponseEntity<ResponseError> alteraParcelasInvalidoExceptionHandler(final BusinessException e) {
+        return createBodyResponse(HttpStatus.UNPROCESSABLE_ENTITY, e);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(QuantidadeParcelasInferiorException.class)

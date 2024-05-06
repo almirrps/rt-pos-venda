@@ -15,6 +15,29 @@ import java.util.Date;
 @Service
 public class PosVendaService {
 
+    private Integer aditamentoAlteraQuant = 1;
+    private Integer aditamentoAlteraDia = 2;
+
+    private void validaTipoAditamento(Integer tipoAditamento, PosVendaDto posVenda) {
+
+        if (tipoAditamento == aditamentoAlteraQuant) { //Aditamento de alteração de quantidade de parcelas
+
+            if (posVenda.getAditamento().getNovaDataPagamento() != null) {
+                throw new AlteraDiaPagamentoInvalidoException();
+            }
+
+        }
+
+        if (tipoAditamento == aditamentoAlteraDia) { //Aditamento de alteração de dia de pagamento
+
+            if (posVenda.getAditamento().getNovaQuantidadeParcelas() != null) {
+                throw new AlteraParcelasInvalidoException();
+            }
+
+        }
+
+    }
+
     private void validaContratoAtivo(PosVendaDto posVenda) {
 
         if (!posVenda.getContrato().getAtivo()) {
@@ -59,6 +82,7 @@ public class PosVendaService {
 
     public RetornoPosVendaDto alteraQuantidadeParcelas(PosVendaDto posVenda) {
 
+        validaTipoAditamento(aditamentoAlteraQuant, posVenda);
         validaContratoAtivo(posVenda);
         validaQuantidadeParcelas(posVenda);
 
@@ -104,6 +128,7 @@ public class PosVendaService {
 
     public RetornoPosVendaDto alteraDiaPagamento(PosVendaDto posVenda) {
 
+        validaTipoAditamento(aditamentoAlteraDia, posVenda);
         validaContratoAtivo(posVenda);
         validaDiaPagamentoExcedido(posVenda);
         validaParcelaAtrasada(posVenda);
