@@ -90,34 +90,39 @@ public class PosVendaService {
         novoPosVenda.setContrato(posVenda.getContrato());
         novoPosVenda.getContrato().setUltimoDigitoContrato(9);
 
-        novoPosVenda.setFinanceiro(posVenda.getFinanceiro());
-
         Date data = new Date();
-        String dataAtual = new SimpleDateFormat("yyyy/MM/dd").format(data);
+        String dataAtual = new SimpleDateFormat("yyyy-MM-dd").format(data);
 
         DecimalFormat df = new DecimalFormat("#.00");
 
-        String dtContratacao = posVenda.getContrato().getDataContratacao();
-        Integer novaQtdeParcelas = posVenda.getAditamento().getNovaQuantidadeParcelas();
-
         try {
-            for (FinanceiroDto financeiroDto : posVenda.getFinanceiro()) {
+            for (int idx=0; idx<posVenda.getFinanceiro().size(); idx++) {
+
+                novoPosVenda.getFinanceiro().add(new FinanceiroDto());
+                novoPosVenda.getFinanceiro().get(idx).setDataCalculo(posVenda.getFinanceiro().get(idx).getDataCalculo());
+                novoPosVenda.getFinanceiro().get(idx).setTipoCalculo(posVenda.getFinanceiro().get(idx).getTipoCalculo());
+                novoPosVenda.getFinanceiro().get(idx).setValorTotal(posVenda.getFinanceiro().get(idx).getValorTotal());
+                novoPosVenda.getFinanceiro().get(idx).setQuantidadeParcelas(posVenda.getFinanceiro().get(idx).getQuantidadeParcelas());
+                novoPosVenda.getFinanceiro().get(idx).setValorParcelas(posVenda.getFinanceiro().get(idx).getValorParcelas());
+                novoPosVenda.getFinanceiro().get(idx).setDiaPagamento(posVenda.getFinanceiro().get(idx).getDiaPagamento());
+                novoPosVenda.getFinanceiro().get(idx).setPercentualTaxaJuro(posVenda.getFinanceiro().get(idx).getPercentualTaxaJuro());
+
+                String dtContratacao = posVenda.getContrato().getDataContratacao();
+                Integer novaQtdeParcelas = posVenda.getAditamento().getNovaQuantidadeParcelas();
                 CalculoJurosModel calculoJurosModel = CalculaJuros.buscaCalculoJuros(dtContratacao, novaQtdeParcelas,
-                        financeiroDto.getValorTotal());
+                        posVenda.getFinanceiro().get(idx).getValorTotal());
 
                 String valorParcela = df.format(calculoJurosModel.getValor_total()/novaQtdeParcelas);
                 Double novoValorParcela = Double.parseDouble(valorParcela.replaceAll(",", "."));
 
-                FinanceiroDto financeiroCalculado = new FinanceiroDto();
-                financeiroCalculado.setDataCalculo(dataAtual);
-                financeiroCalculado.setTipoCalculo("ADITAMENTO");
-                financeiroCalculado.setValorTotal(calculoJurosModel.getValor_total());
-                financeiroCalculado.setQuantidadeParcelas(novaQtdeParcelas);
-                financeiroCalculado.setValorParcelas(novoValorParcela);
-                financeiroCalculado.setDiaPagamento(financeiroDto.getDiaPagamento());
-                financeiroCalculado.setPercentualTaxaJuro(calculoJurosModel.getPercentual_juros());
-
-                novoPosVenda.getFinanceiro().add(financeiroCalculado);
+                novoPosVenda.getFinanceiro().add(new FinanceiroDto());
+                novoPosVenda.getFinanceiro().get(idx+1).setDataCalculo(dataAtual);
+                novoPosVenda.getFinanceiro().get(idx+1).setTipoCalculo("ADITAMENTO");
+                novoPosVenda.getFinanceiro().get(idx+1).setValorTotal(calculoJurosModel.getValor_total());
+                novoPosVenda.getFinanceiro().get(idx+1).setQuantidadeParcelas(novaQtdeParcelas);
+                novoPosVenda.getFinanceiro().get(idx+1).setValorParcelas(novoValorParcela);
+                novoPosVenda.getFinanceiro().get(idx+1).setDiaPagamento(posVenda.getFinanceiro().get(idx).getDiaPagamento());
+                novoPosVenda.getFinanceiro().get(idx+1).setPercentualTaxaJuro(calculoJurosModel.getPercentual_juros());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -137,24 +142,29 @@ public class PosVendaService {
         novoPosVenda.setContrato(posVenda.getContrato());
         novoPosVenda.getContrato().setUltimoDigitoContrato(9);
 
-        novoPosVenda.setFinanceiro(posVenda.getFinanceiro());
+        for (int idx=0; idx<posVenda.getFinanceiro().size(); idx++) {
 
-        Date data = new Date();
-        String dataAtual = new SimpleDateFormat("yyyy/MM/dd").format(data);
-        Integer novoDiaPagamento = posVenda.getAditamento().getNovaDataPagamento();
+            novoPosVenda.getFinanceiro().add(new FinanceiroDto());
+            novoPosVenda.getFinanceiro().get(idx).setDataCalculo(posVenda.getFinanceiro().get(idx).getDataCalculo());
+            novoPosVenda.getFinanceiro().get(idx).setTipoCalculo(posVenda.getFinanceiro().get(idx).getTipoCalculo());
+            novoPosVenda.getFinanceiro().get(idx).setValorTotal(posVenda.getFinanceiro().get(idx).getValorTotal());
+            novoPosVenda.getFinanceiro().get(idx).setQuantidadeParcelas(posVenda.getFinanceiro().get(idx).getQuantidadeParcelas());
+            novoPosVenda.getFinanceiro().get(idx).setValorParcelas(posVenda.getFinanceiro().get(idx).getValorParcelas());
+            novoPosVenda.getFinanceiro().get(idx).setDiaPagamento(posVenda.getFinanceiro().get(idx).getDiaPagamento());
+            novoPosVenda.getFinanceiro().get(idx).setPercentualTaxaJuro(posVenda.getFinanceiro().get(idx).getPercentualTaxaJuro());
 
-        for (FinanceiroDto financeiroDto : posVenda.getFinanceiro()) {
+            Date data = new Date();
+            String dataAtual = new SimpleDateFormat("yyyy-MM-dd").format(data);
+            Integer novoDiaPagamento = posVenda.getAditamento().getNovaDataPagamento();
 
-            FinanceiroDto financeiroCalculado = new FinanceiroDto();
-            financeiroCalculado.setDataCalculo(dataAtual);
-            financeiroCalculado.setTipoCalculo("ADITAMENTO");
-            financeiroCalculado.setValorTotal(financeiroDto.getValorTotal());
-            financeiroCalculado.setQuantidadeParcelas(financeiroDto.getQuantidadeParcelas());
-            financeiroCalculado.setValorParcelas(financeiroDto.getValorParcelas());
-            financeiroCalculado.setDiaPagamento(novoDiaPagamento);
-            financeiroCalculado.setPercentualTaxaJuro(financeiroDto.getPercentualTaxaJuro());
-
-            novoPosVenda.getFinanceiro().add(financeiroCalculado);
+            novoPosVenda.getFinanceiro().add(new FinanceiroDto());
+            novoPosVenda.getFinanceiro().get(idx+1).setDataCalculo(dataAtual);
+            novoPosVenda.getFinanceiro().get(idx+1).setTipoCalculo("ADITAMENTO");
+            novoPosVenda.getFinanceiro().get(idx+1).setValorTotal(posVenda.getFinanceiro().get(idx).getValorTotal());
+            novoPosVenda.getFinanceiro().get(idx+1).setQuantidadeParcelas(posVenda.getFinanceiro().get(idx).getQuantidadeParcelas());
+            novoPosVenda.getFinanceiro().get(idx+1).setValorParcelas(posVenda.getFinanceiro().get(idx).getValorParcelas());
+            novoPosVenda.getFinanceiro().get(idx+1).setDiaPagamento(novoDiaPagamento);
+            novoPosVenda.getFinanceiro().get(idx+1).setPercentualTaxaJuro(posVenda.getFinanceiro().get(idx).getPercentualTaxaJuro());
         }
 
         return novoPosVenda;
