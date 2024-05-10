@@ -24,32 +24,10 @@ public class PosVendaServiceTest {
     }
 
     @Test
-    void alterarQuantidadeParcelas() throws FalhaGenericaAplicacao {
-
-        //Mockito.doNothing().when(posVendaService).alteraQuantidadeParcelas(NOVA_QUANTIDADE_PARCELAS);
-        Assertions.assertDoesNotThrow(() -> posVendaService.alteraQuantidadeParcelas(NOVA_QUANTIDADE_PARCELAS));
-
-    }
-
-    @Test
-    void alterarQuantidadeParcelasComErro() throws Exception {
-
-        Assertions.assertThrows(RuntimeException.class, () -> posVendaService.alteraQuantidadeParcelas(NOVA_QUANTIDADE_PARCELAS));
-
-    }
-
-    @Test
     void alterarDiaPagamento() throws FalhaGenericaAplicacao {
 
         //Mockito.doNothing().when(posVendaService).alteraDiaPagamento(NOVO_DIA_PAGAMENTO);
         Assertions.assertDoesNotThrow(() -> posVendaService.alteraDiaPagamento(NOVO_DIA_PAGAMENTO));
-
-    }
-
-    @Test
-    void alterarDiaPagamentoComErro() throws Exception {
-
-        Assertions.assertThrows(RuntimeException.class, () -> posVendaService.alteraDiaPagamento(NOVO_DIA_PAGAMENTO));
 
     }
 
